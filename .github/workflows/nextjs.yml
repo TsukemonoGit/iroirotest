@@ -31,6 +31,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          submodules: recursive  # サブモジュールを再帰的にチェックアウトする
       - name: Detect package manager
         id: detect-package-manager
         run: |
