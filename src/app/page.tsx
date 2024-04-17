@@ -9,7 +9,7 @@ export default function Home() {
   const [selectedTab, setSelectedTab] = useState("");
 
   useEffect(() => {
-    if (window) {
+    if (typeof window !== "undefined") {
       const searchParams = new URLSearchParams(window?.location?.search);
       const pageid = searchParams.get("page");
       console.log(pageid);
