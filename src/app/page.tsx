@@ -1,18 +1,27 @@
 "use client";
-import { Tabs, TabList, tabClasses, Tab, Typography } from "@mui/joy";
+
 import IroiroBotDisplay from "./IroiroBotDisplay";
 import Feedback from "./Feedback";
 import {
   Alert,
+  Box,
+  Grid,
   Snackbar,
+  Tab,
+  Tabs,
   Theme,
   ThemeProvider,
+  Typography,
+  alpha,
   createTheme,
+  tabClasses,
   useMediaQuery,
 } from "@mui/material";
 import { Suspense, useEffect, useMemo, useState } from "react";
 import React from "react";
-
+import { TabPanel } from "@mui/joy";
+import HomeIcon from "@mui/icons-material/Home";
+import FeedbackIcon from "@mui/icons-material/Feedback";
 export default function Home() {
   const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
 
@@ -49,15 +58,39 @@ export default function Home() {
   };
 
   return (
-    <main className="flex min-h-screen flex-col items-center  container mx-auto p-1 ">
-      <Typography gutterBottom>Nostr iroiroBot</Typography>
-      <Tabs
-        aria-label="tabs"
-        sx={{ bgcolor: "transparent" }}
-        value={selectedTab}
-        onChange={handleChangeTab}
-      >
-        <TabList
+    <ThemeProvider theme={theme}>
+      <main className="flex min-h-screen flex-col items-center  container mx-auto p-1 ">
+        <Box
+          sx={{
+            borderColor: theme.palette.divider,
+            width: "100%",
+            boxShadow: "1",
+            top: 0,
+            justifyContent: "space-between",
+            display: "flex",
+          }}
+          bgcolor={`${alpha(theme.palette.background.default, 0.5)}`}
+          position="fixed"
+        >
+          <Typography
+            variant="h6"
+            sx={{
+              alignSelf: "center",
+              px: 1,
+              color: theme.palette.text.secondary,
+            }}
+          >
+            Nostr iroiroBot
+          </Typography>
+          <Tabs
+            aria-label="tabs"
+            value={selectedTab}
+            onChange={handleChangeTab}
+            /*   variant="fullWidth" */
+            textColor="secondary"
+            indicatorColor="secondary"
+          >
+            {/* <TabList
           disableUnderline
           sx={{
             p: 0.5,
@@ -69,36 +102,52 @@ export default function Home() {
               bgcolor: "background.surface",
             },
           }}
-        >
-          <Tab disableIndicator value="home">
-            Home
-          </Tab>
-          <Tab disableIndicator value="feedback">
-            Feedback
-          </Tab>
-        </TabList>
-      </Tabs>
-      {selectedTab === "home" ? (
+        > */}
+            <Tab
+              value="home"
+              label="Home"
+              icon={<HomeIcon />}
+              sx={{ py: 0, minHeight: "0", px: [0, 2, 4] }}
+            />
+
+            <Tab
+              value="feedback"
+              label="Feedback"
+              icon={<FeedbackIcon />}
+              sx={{ py: 0, px: [0, 2, 4], minHeight: "0" }}
+            />
+          </Tabs>
+        </Box>
+
+        {/* <TabPanel value="home">
+        {" "}
         <IroiroBotDisplay theme={theme} />
-      ) : (
+      </TabPanel>
+      <TabPanel value="feedback">
         <Feedback setOpenSnackbar={setOpenSnackbar} theme={theme} />
-      )}
-      <Snackbar
-        open={openSnackbar.isopen}
-        autoHideDuration={5000}
-        onClose={handleSnackClose}
-      >
-        <Alert
+      </TabPanel> */}
+        {selectedTab === "home" ? (
+          <IroiroBotDisplay theme={theme} />
+        ) : (
+          <Feedback setOpenSnackbar={setOpenSnackbar} theme={theme} />
+        )}
+        <Snackbar
+          open={openSnackbar.isopen}
+          autoHideDuration={5000}
           onClose={handleSnackClose}
-          severity={
-            (openSnackbar.type as "success") || "info" || "warning" || "error"
-          }
-          variant="filled"
-          sx={{ width: "100%" }}
         >
-          {openSnackbar.message}
-        </Alert>
-      </Snackbar>
-    </main>
+          <Alert
+            onClose={handleSnackClose}
+            severity={
+              (openSnackbar.type as "success") || "info" || "warning" || "error"
+            }
+            variant="filled"
+            sx={{ width: "100%" }}
+          >
+            {openSnackbar.message}
+          </Alert>
+        </Snackbar>
+      </main>
+    </ThemeProvider>
   );
 }

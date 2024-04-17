@@ -35,7 +35,7 @@ const IroiroBotDisplay = ({ theme }: { theme: Theme }) => {
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const [sortField, setSortField] = useState<keyof DataItem>("title");
   const isLargeScreen = useMediaQuery(theme?.breakpoints.up("sm"));
-  console.log(theme);
+  //console.log(theme);
   useEffect(() => {
     const searchData = () => {
       const filteredData = Object.values(iroiro).filter((item: DataItem) =>
@@ -97,19 +97,15 @@ const IroiroBotDisplay = ({ theme }: { theme: Theme }) => {
   };
 
   return (
-    <ThemeProvider theme={theme}>
-      <Typography
-        variant="h4"
-        gutterBottom
-        sx={{ mt: 2, mb: 6, textAlign: "center" }}
-      >
+    <>
+      <Typography variant="h4" gutterBottom sx={{ mt: 8, mb: 6 }}>
         iroiro Data
       </Typography>
       <Box>
         <Typography
-          sx={{
-            textAlign: "center",
-          }}
+        // sx={{
+        //   textAlign: "center",
+        // }}
         >
           <Link
             target="_blank"
@@ -214,7 +210,7 @@ const IroiroBotDisplay = ({ theme }: { theme: Theme }) => {
       <p id="noResultsMessage" style={{ display: "none" }}>
         No matching data found.
       </p>
-    </ThemeProvider>
+    </>
   );
 };
 

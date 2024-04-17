@@ -67,8 +67,8 @@ export default function Feedback({ setOpenSnackbar, theme }: Props) {
   };
 
   return (
-    <ThemeProvider theme={theme}>
-      <Typography variant="h4" gutterBottom sx={{ mt: 2 }}>
+    <>
+      <Typography variant="h4" gutterBottom sx={{ mt: 8 }}>
         Feedback
       </Typography>
       <FormControl
@@ -113,7 +113,7 @@ export default function Feedback({ setOpenSnackbar, theme }: Props) {
               value={name}
               onChange={(e) => setName(e.target.value)}
               margin="normal"
-              color="success"
+              color="primary"
             />
           </Grid>
 
@@ -147,13 +147,13 @@ export default function Feedback({ setOpenSnackbar, theme }: Props) {
                 maxLength: MAX_MESSAGE_LENGTH,
               }}
               margin="normal"
-              color="success"
+              color="primary"
             />
           </Grid>
           <Grid item>
             <Button
               variant="contained"
-              color="success"
+              color="primary"
               type="submit"
               onClick={handleSendMessage}
             >
@@ -162,6 +162,6 @@ export default function Feedback({ setOpenSnackbar, theme }: Props) {
           </Grid>
         </Grid>
       </FormControl>
-    </ThemeProvider>
+    </>
   );
 }
