@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import iroiro from "./iroiroData/iroiro.json";
 import Table from "@mui/joy/Table";
-import { useColorScheme, useTheme } from "@mui/joy/styles";
-import { Box, Button, Input, Stack } from "@mui/joy";
+import { useTheme } from "@mui/joy/styles";
+import { Box, Button, Input } from "@mui/joy";
 import Typography from "@mui/material/Typography";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
