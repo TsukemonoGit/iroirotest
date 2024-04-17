@@ -25,6 +25,19 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  update-submodule:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          repository: ${{ github.repository }}  # リポジトリを現在のリポジトリに設定
+          submodules: 'recursive'  # サブモジュールを再帰的にチェックアウト
+      - name: Update submodules
+        run: git submodule update --remote
+        working-directory: ./src/app/iroiroData  # サブモジュールのパスを指定
+
+
   # Build job
   build:
     runs-on: ubuntu-latest
@@ -32,7 +45,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          submodules: recursive  # サブモジュールを再帰的にチェックアウトする
+          repository: ${{ github.repository }}  # リポジトリを現在のリポジトリに設定
+          ref: ${{ github.event.before }}  # 直前のコミットをチェックアウトして、サブモジュールの更新状態を確認
+          submodules: 'recursive'  # サブモジュールを再帰的にチェックアウト
+
       - name: Detect package manager
         id: detect-package-manager
         run: |
