@@ -1,8 +1,21 @@
 import { useEffect, useState } from "react";
 import iroiro from "./iroiroData/iroiro.json";
-import Table from "@mui/joy/Table";
-import { Theme } from "@mui/material";
-import { Box, Button, Input, Link } from "@mui/joy";
+import {
+  Button,
+  Input,
+  Link,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TextField,
+  Theme,
+  ThemeProvider,
+} from "@mui/material";
+import { Box } from "@mui/joy";
 import Typography from "@mui/material/Typography";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
@@ -84,7 +97,7 @@ const IroiroBotDisplay = ({ theme }: { theme: Theme }) => {
   };
 
   return (
-    <div>
+    <ThemeProvider theme={theme}>
       <Typography
         variant="h4"
         gutterBottom
@@ -110,84 +123,98 @@ const IroiroBotDisplay = ({ theme }: { theme: Theme }) => {
           </Link>
           が以下のNostr関連の情報リストからランダムに一つ選んで毎時16分にポストします。
         </Typography>
-        <Box sx={{ mt: 2, display: "flex", alignItems: "center", gap: 1 }}>
+        <Box sx={{ mt: 4, display: "flex", alignItems: "center", gap: 1 }}>
           <Typography sx={{ wordBreak: "keep-all" }}>検索</Typography>
-          <Input
+          <TextField
             type="text"
             value={searchTerm}
             onChange={searchHandler}
-            placeholder="Search..."
+            variant="filled"
+            label="Search..."
+            color="primary"
+            fullWidth
           />
 
-          <Button onClick={shareURL} sx={{ p: 1 }}>
-            copy share URL
+          <Button
+            variant="contained"
+            onClick={shareURL}
+            sx={{ px: 2, wordBreak: "break-keep", whiteSpace: "nowrap" }}
+          >
+            copy
+            <br />
+            share URL
           </Button>
         </Box>
       </Box>
-      <Table
-        aria-label="basic table"
-        sx={{
-          mt: 2,
-          wordBreak: "break-all",
-          whiteSpace: "pre-line",
-        }}
-        variant={"soft"}
-      >
-        <thead>
-          <tr>
-            <th style={{ width: "22%" }} onClick={() => sortData("title")}>
-              Title {renderSortIcon("title")}
-            </th>
-            <th
-              style={{ width: "60%" }}
-              onClick={() => sortData("description")}
-            >
-              Description {renderSortIcon("description")}
-            </th>
-            {isLargeScreen && (
-              <>
-                <th
-                  style={{ width: "10%" }}
-                  onClick={() => sortData("category")}
-                >
-                  Category {renderSortIcon("category")}
-                </th>
-                <th style={{ width: "8%" }} onClick={() => sortData("kind")}>
-                  Kind {renderSortIcon("kind")}
-                </th>
-              </>
-            )}
-          </tr>
-        </thead>
-        <tbody>
-          {filteredIroiro.map((item: DataItem, index: number) => (
-            <tr key={index}>
-              <td>
-                <Link
-                  variant="plain"
-                  href={item.url}
-                  className="link"
-                  target="_blank"
-                  rel="external noreferrer"
-                >
-                  {item.title}
-                </Link>
-              </td>
-              <td>{item.description}</td>
+      <TableContainer component={Paper} sx={{ mt: 2 }}>
+        <Table
+          sx={{
+            wordBreak: "break-all",
+            whiteSpace: "pre-line",
+            bgcolor: theme.palette.background.paper,
+          }}
+        >
+          <TableHead>
+            <TableRow>
+              <TableCell
+                style={{ width: "22%", fontWeight: "bold" }}
+                onClick={() => sortData("title")}
+              >
+                Title {renderSortIcon("title")}
+              </TableCell>
+              <TableCell
+                style={{ width: "60%", fontWeight: "bold" }}
+                onClick={() => sortData("description")}
+              >
+                Description {renderSortIcon("description")}
+              </TableCell>
               {isLargeScreen && (
                 <>
-                  <td>{item.category}</td>
-                  <td>{item.kind ?? ""}</td>
+                  <TableCell
+                    style={{ width: "10%", fontWeight: "bold" }}
+                    onClick={() => sortData("category")}
+                  >
+                    Category {renderSortIcon("category")}
+                  </TableCell>
+                  <TableCell
+                    style={{ width: "8%", fontWeight: "bold" }}
+                    onClick={() => sortData("kind")}
+                  >
+                    Kind {renderSortIcon("kind")}
+                  </TableCell>
                 </>
               )}
-            </tr>
-          ))}
-        </tbody>
-      </Table>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {filteredIroiro.map((item: DataItem, index: number) => (
+              <TableRow key={index}>
+                <TableCell>
+                  <Link
+                    href={item.url}
+                    className="link"
+                    target="_blank"
+                    rel="external noreferrer"
+                  >
+                    {item.title}
+                  </Link>
+                </TableCell>
+                <TableCell>{item.description}</TableCell>
+                {isLargeScreen && (
+                  <>
+                    <TableCell>{item.category}</TableCell>
+                    <TableCell align="right">{item.kind ?? ""}</TableCell>
+                  </>
+                )}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
       <p id="noResultsMessage" style={{ display: "none" }}>
         No matching data found.
       </p>
-    </div>
+    </ThemeProvider>
   );
 };
 
