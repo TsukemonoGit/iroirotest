@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import iroiro from "./iroiroData/iroiro.json";
 import Table from "@mui/joy/Table";
-import { useTheme } from "@mui/joy/styles";
+import { Theme } from "@mui/material";
 import { Box, Button, Input, Link } from "@mui/joy";
 import Typography from "@mui/material/Typography";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -16,12 +16,12 @@ type DataItem = {
   url: string;
 };
 
-const IroiroBotDisplay: React.FC = () => {
+const IroiroBotDisplay = ({ theme }: { theme: Theme }) => {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [filteredIroiro, setFilteredIroiro] = useState<DataItem[]>([]);
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const [sortField, setSortField] = useState<keyof DataItem>("title");
-  const isLargeScreen = useMediaQuery(useTheme().breakpoints.up("sm"));
+  const isLargeScreen = useMediaQuery(theme?.breakpoints.up("sm"));
 
   useEffect(() => {
     const searchData = () => {

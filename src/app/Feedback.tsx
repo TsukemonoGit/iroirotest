@@ -1,9 +1,27 @@
 import { useState } from "react";
-import { Box, Button, Grid, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  FormControl,
+  Grid,
+  TextField,
+  Typography,
+  useTheme,
+} from "@mui/material";
+import { Theme } from "@mui/material";
 import { sendMessage } from "./function";
 import { sendpub } from "./function";
-
-export default function Feedback({ setOpenSnackbar }: any) {
+interface Props {
+  setOpenSnackbar: React.Dispatch<
+    React.SetStateAction<{
+      isopen: boolean;
+      type: string;
+      message: string;
+    }>
+  >;
+  theme: Theme;
+}
+export default function Feedback({ setOpenSnackbar, theme }: Props) {
   const [name, setName] = useState("");
   const [message, setMessage] = useState("");
   const [error, setError] = useState(false);
@@ -52,23 +70,31 @@ export default function Feedback({ setOpenSnackbar }: any) {
       <Typography variant="h4" gutterBottom sx={{ mt: 2 }}>
         Feedback
       </Typography>
-      <Box
+      <FormControl
+        color="success"
         sx={{
           display: "flex",
           flexDirection: "column",
           mt: 6,
           maxWidth: "90%",
+
+          bgcolor: theme.palette.grey[200],
+          p: 4,
         }}
       >
         <Grid container spacing={2} flexDirection="column" alignItems="center">
           <Typography
-            sx={{ fontSize: 14, textAlign: "center" }}
+            sx={{
+              fontSize: 14,
+              textAlign: "center",
+            }}
             color="text.secondary"
             gutterBottom
           >
             Your message will be sent via encrypted DM using a randomly
             generated key.
           </Typography>
+
           <Grid
             item
             width={600}
@@ -82,11 +108,13 @@ export default function Feedback({ setOpenSnackbar }: any) {
             }}
           >
             <TextField
+              label="name"
               fullWidth
               type="text"
-              placeholder="name (not required)"
               value={name}
               onChange={(e) => setName(e.target.value)}
+              margin="normal"
+              color="success"
             />
           </Grid>
 
@@ -103,8 +131,10 @@ export default function Feedback({ setOpenSnackbar }: any) {
             }}
           >
             <TextField
+              required
+              label="message"
+              sx={{}}
               fullWidth
-              placeholder="message"
               value={message}
               multiline
               rows={6}
@@ -115,7 +145,11 @@ export default function Feedback({ setOpenSnackbar }: any) {
                   ? `Message is required and must be less than ${MAX_MESSAGE_LENGTH} characters`
                   : ""
               }
-              inputProps={{ maxLength: MAX_MESSAGE_LENGTH }}
+              inputProps={{
+                maxLength: MAX_MESSAGE_LENGTH,
+              }}
+              margin="normal"
+              color="success"
             />
           </Grid>
           <Grid item>
@@ -129,7 +163,7 @@ export default function Feedback({ setOpenSnackbar }: any) {
             </Button>
           </Grid>
         </Grid>
-      </Box>
+      </FormControl>
     </>
   );
 }
