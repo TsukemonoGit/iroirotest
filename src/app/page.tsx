@@ -4,7 +4,7 @@ import IroiroBotDisplay from "./IroiroBotDisplay";
 import { useState } from "react";
 import Feedback from "./Feedback";
 import { Alert, Snackbar } from "@mui/material";
-import { useParams, usePathname, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 
 export default function Home() {
   const searchParams = useSearchParams();

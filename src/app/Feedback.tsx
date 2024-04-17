@@ -1,23 +1,9 @@
 import { useState } from "react";
-import {
-  Box,
-  Button,
-  Card,
-  CardContent,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  Grid,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Box, Button, Grid, TextField, Typography } from "@mui/material";
 import { sendMessage } from "./function";
 import { sendpub } from "./function";
 
 export default function Feedback({ setOpenSnackbar }: any) {
-  const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
   const [message, setMessage] = useState("");
   const [error, setError] = useState(false);
@@ -121,7 +107,7 @@ export default function Feedback({ setOpenSnackbar }: any) {
               placeholder="message"
               value={message}
               multiline
-              rows={4}
+              rows={6}
               onChange={handleInputChange}
               error={error}
               helperText={
