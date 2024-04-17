@@ -2,9 +2,11 @@ import { useEffect, useState } from "react";
 import iroiro from "./iroiroData/iroiro.json";
 import Table from "@mui/joy/Table";
 import { useTheme } from "@mui/joy/styles";
-import { Box, Button, Input } from "@mui/joy";
+import { Box, Button, Input, Link } from "@mui/joy";
 import Typography from "@mui/material/Typography";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 
 type DataItem = {
   title: string;
@@ -50,7 +52,6 @@ const IroiroBotDisplay: React.FC = () => {
 
   const sortData = (field: keyof DataItem) => {
     const sortedData = [...filteredIroiro].sort((a, b) => {
-      console.log(a[field], b[field]);
       if (
         (a[field] === undefined || (a[field] as string) === "") &&
         (b[field] === undefined || (b[field] as string) === "")
@@ -75,19 +76,29 @@ const IroiroBotDisplay: React.FC = () => {
     setSortField(field);
   };
 
+  const renderSortIcon = (field: keyof DataItem) => {
+    if (field === sortField) {
+      return sortOrder === "asc" ? <ArrowDropDownIcon /> : <ArrowDropUpIcon />;
+    }
+    return null;
+  };
+
   return (
     <div>
-      <Typography variant="h4" gutterBottom sx={{ mt: 4 }}>
-        Nostr iroiroBot JSON Data Display
+      <Typography
+        variant="h4"
+        gutterBottom
+        sx={{ mt: 2, mb: 4, textAlign: "center" }}
+      >
+        iroiro Data
       </Typography>
       <Box>
         <Typography>
           iroiroBotが以下のNostr関連の情報リストからランダムに一つ選んで毎時16分にポストします。
           <br />
-          内容について何かあれば <a href="./feedback.html">こちらから</a>{" "}
-          からご連絡ください。
+          <Link href="./feedback.html">feedback</Link>
         </Typography>
-        <Box sx={{ mt: 2, display: "flex", alignItems: "center", gap: 1 }}>
+        <Box sx={{ mt: 4, display: "flex", alignItems: "center", gap: 1 }}>
           <Typography>検索</Typography>
           <Input
             type="text"
@@ -96,7 +107,7 @@ const IroiroBotDisplay: React.FC = () => {
             placeholder="Search..."
           />
 
-          <Button onClick={shareURL} sx={{ p: 0 }}>
+          <Button onClick={shareURL} sx={{ p: 1 }}>
             copy share URL
           </Button>
         </Box>
@@ -104,22 +115,22 @@ const IroiroBotDisplay: React.FC = () => {
       <Table
         aria-label="basic table"
         sx={{
-          mt: 1,
+          mt: 2,
           wordBreak: "break-all",
           whiteSpace: "pre-line",
-          bgcolor: useTheme().palette.background.surface,
         }}
+        variant={"soft"}
       >
         <thead>
-          <tr className={""}>
+          <tr>
             <th style={{ width: "20%" }} onClick={() => sortData("title")}>
-              Title
+              Title {renderSortIcon("title")}
             </th>
             <th
               style={{ width: "65%" }}
               onClick={() => sortData("description")}
             >
-              Description
+              Description {renderSortIcon("description")}
             </th>
             {isLargeScreen && (
               <>
@@ -127,10 +138,10 @@ const IroiroBotDisplay: React.FC = () => {
                   style={{ width: "10%" }}
                   onClick={() => sortData("category")}
                 >
-                  Category
+                  Category {renderSortIcon("category")}
                 </th>
                 <th style={{ width: "5%" }} onClick={() => sortData("kind")}>
-                  Kind
+                  Kind {renderSortIcon("kind")}
                 </th>
               </>
             )}
@@ -140,14 +151,15 @@ const IroiroBotDisplay: React.FC = () => {
           {filteredIroiro.map((item: DataItem, index: number) => (
             <tr key={index}>
               <td>
-                <a
+                <Link
+                  variant="plain"
                   href={item.url}
                   className="link"
                   target="_blank"
                   rel="external noreferrer"
                 >
                   {item.title}
-                </a>
+                </Link>
               </td>
               <td>{item.description}</td>
               {isLargeScreen && (
