@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import iroiro from "./iroiroData/iroiro.json";
 import Table from "@mui/joy/Table";
-import { theme } from "./page";
+import { useColorScheme, useTheme } from "@mui/joy/styles";
 import { Box, Button, Input, Stack } from "@mui/joy";
 import Typography from "@mui/material/Typography";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -19,7 +19,7 @@ const IroiroBotDisplay: React.FC = () => {
   const [filteredIroiro, setFilteredIroiro] = useState<DataItem[]>([]);
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const [sortField, setSortField] = useState<keyof DataItem>("title");
-  const isLargeScreen = useMediaQuery(theme.breakpoints.up("sm"));
+  const isLargeScreen = useMediaQuery(useTheme().breakpoints.up("sm"));
 
   useEffect(() => {
     const searchData = () => {
@@ -107,7 +107,7 @@ const IroiroBotDisplay: React.FC = () => {
           mt: 1,
           wordBreak: "break-all",
           whiteSpace: "pre-line",
-          bgcolor: theme.palette.background.default,
+          bgcolor: useTheme().palette.background.surface,
         }}
       >
         <thead>
