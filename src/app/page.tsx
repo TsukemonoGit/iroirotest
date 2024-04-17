@@ -6,7 +6,7 @@ import { Alert, Snackbar } from "@mui/material";
 import { Suspense, useEffect, useState } from "react";
 import { useRouter } from "next/router"; // Import useRouter from Next.js
 export default function Home() {
-  const [selectedTab, setSelectedTab] = useState("");
+  const [selectedTab, setSelectedTab] = useState("home");
 
   useEffect(() => {
     if (typeof window !== "undefined") {
