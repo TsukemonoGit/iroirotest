@@ -4,15 +4,9 @@ import IroiroBotDisplay from "./IroiroBotDisplay";
 import Feedback from "./Feedback";
 import { Alert, Snackbar } from "@mui/material";
 import { useState, useEffect, Suspense } from "react";
-import { AppProps } from "next/app";
 
-let useSearchParams: () => URLSearchParams;
-if (typeof window !== "undefined") {
-  useSearchParams = require("next/navigation").useSearchParams;
-}
-
-export default function Home({ Component, pageProps, router }: AppProps) {
-  const searchParams = useSearchParams();
+export default function Home() {
+  const searchParams = new URLSearchParams(window.location.search);
 
   // Check if searchParams is null before using it
   const page = searchParams ? searchParams.get("page") : null;
@@ -33,58 +27,56 @@ export default function Home({ Component, pageProps, router }: AppProps) {
     setOpenSnackbar({ isopen: false, type: "success", message: "" });
   };
   return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <main className="flex min-h-screen flex-col items-center  container mx-auto p-1 ">
-        <Typography gutterBottom>Nostr iroiroBot</Typography>
-        <Tabs
-          aria-label="tabs"
-          sx={{ bgcolor: "transparent" }}
-          defaultValue={page ? page : "home"}
-          onChange={handleChangeTab}
+    <main className="flex min-h-screen flex-col items-center  container mx-auto p-1 ">
+      <Typography gutterBottom>Nostr iroiroBot</Typography>
+      <Tabs
+        aria-label="tabs"
+        sx={{ bgcolor: "transparent" }}
+        defaultValue={page ? page : "home"}
+        onChange={handleChangeTab}
+      >
+        <TabList
+          disableUnderline
+          sx={{
+            p: 0.5,
+            gap: 0.5,
+            borderRadius: "xl",
+            bgcolor: "background.level1",
+            [`& .${tabClasses.root}[aria-selected="true"]`]: {
+              boxShadow: "sm",
+              bgcolor: "background.surface",
+            },
+          }}
         >
-          <TabList
-            disableUnderline
-            sx={{
-              p: 0.5,
-              gap: 0.5,
-              borderRadius: "xl",
-              bgcolor: "background.level1",
-              [`& .${tabClasses.root}[aria-selected="true"]`]: {
-                boxShadow: "sm",
-                bgcolor: "background.surface",
-              },
-            }}
-          >
-            <Tab disableIndicator value="home">
-              Home
-            </Tab>
-            <Tab disableIndicator value="feedback">
-              Feedback
-            </Tab>
-          </TabList>
-        </Tabs>
-        {selectedTab === "home" ? (
-          <IroiroBotDisplay />
-        ) : (
-          <Feedback setOpenSnackbar={setOpenSnackbar} />
-        )}
-        <Snackbar
-          open={openSnackbar.isopen}
-          autoHideDuration={5000}
+          <Tab disableIndicator value="home">
+            Home
+          </Tab>
+          <Tab disableIndicator value="feedback">
+            Feedback
+          </Tab>
+        </TabList>
+      </Tabs>
+      {selectedTab === "home" ? (
+        <IroiroBotDisplay />
+      ) : (
+        <Feedback setOpenSnackbar={setOpenSnackbar} />
+      )}
+      <Snackbar
+        open={openSnackbar.isopen}
+        autoHideDuration={5000}
+        onClose={handleSnackClose}
+      >
+        <Alert
           onClose={handleSnackClose}
+          severity={
+            (openSnackbar.type as "success") || "info" || "warning" || "error"
+          }
+          variant="filled"
+          sx={{ width: "100%" }}
         >
-          <Alert
-            onClose={handleSnackClose}
-            severity={
-              (openSnackbar.type as "success") || "info" || "warning" || "error"
-            }
-            variant="filled"
-            sx={{ width: "100%" }}
-          >
-            {openSnackbar.message}
-          </Alert>
-        </Snackbar>
-      </main>
-    </Suspense>
+          {openSnackbar.message}
+        </Alert>
+      </Snackbar>
+    </main>
   );
 }
