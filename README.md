@@ -1,6 +1,8 @@
 # iroiroBot の Site
 https://github.com/TsukemonoGit/nostr-iroiro-bot のjsonDataを表示するやつ
 
+actionsでsubmoduleのアップデートとコミットしてからビルドされる
+
 
 #
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
