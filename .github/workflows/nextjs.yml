@@ -45,6 +45,10 @@ jobs:
           git commit -m 'Update submodle' || true # エラーが出ても続行
           git push || true # エラーが出ても続行
 
+       # Checkout the latest commit after submodule update
+      - name: Checkout latest commit
+        run: git checkout ${{ github.sha }}
+
   # Build job
   build:
     runs-on: ubuntu-latest
