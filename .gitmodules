@@ -1,0 +1,4 @@
+
+[submodule "src/app/iroiroData"]
+	path = src/app/iroiroData
+	url = https://github.com/TsukemonoGit/nostr-iroiro-bot.git
