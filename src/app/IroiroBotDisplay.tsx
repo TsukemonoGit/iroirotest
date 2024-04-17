@@ -88,17 +88,29 @@ const IroiroBotDisplay: React.FC = () => {
       <Typography
         variant="h4"
         gutterBottom
-        sx={{ mt: 2, mb: 4, textAlign: "center" }}
+        sx={{ mt: 2, mb: 6, textAlign: "center" }}
       >
         iroiro Data
       </Typography>
       <Box>
-        <Typography>
-          iroiroBotが以下のNostr関連の情報リストからランダムに一つ選んで毎時16分にポストします。
-          <br />
-          <Link href="./feedback.html">feedback</Link>
+        <Typography
+          sx={{
+            textAlign: "center",
+          }}
+        >
+          <Link
+            target="_blank"
+            rel="noopener noreferrer"
+            color="primary"
+            href="https://nostter.app/npub1wgpfshr7xjnur3ytj0vg922nc5jceu3xyp8vjklvanvrvrre995s5lrecv"
+            underline="always"
+            sx={{ mr: 1, fontWeight: "bolder" }}
+          >
+            iroiroBot
+          </Link>
+          が以下のNostr関連の情報リストからランダムに一つ選んで毎時16分にポストします。
         </Typography>
-        <Box sx={{ mt: 4, display: "flex", alignItems: "center", gap: 1 }}>
+        <Box sx={{ mt: 2, display: "flex", alignItems: "center", gap: 1 }}>
           <Typography>検索</Typography>
           <Input
             type="text"
