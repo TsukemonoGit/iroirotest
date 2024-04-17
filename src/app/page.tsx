@@ -1,14 +1,21 @@
 "use client";
 import { Tabs, TabList, tabClasses, Tab, Typography } from "@mui/joy";
 import IroiroBotDisplay from "./IroiroBotDisplay";
-import { Suspense, useState } from "react";
 import Feedback from "./Feedback";
 import { Alert, Snackbar } from "@mui/material";
-import { useSearchParams } from "next/navigation";
+import { useState, useEffect, Suspense } from "react";
+import { AppProps } from "next/app";
 
-export default function Home() {
+let useSearchParams: () => URLSearchParams;
+if (typeof window !== "undefined") {
+  useSearchParams = require("next/navigation").useSearchParams;
+}
+
+export default function Home({ Component, pageProps, router }: AppProps) {
   const searchParams = useSearchParams();
-  const page = searchParams.get("page");
+
+  // Check if searchParams is null before using it
+  const page = searchParams ? searchParams.get("page") : null;
   console.log(page);
 
   // const initialTab = query.feedback ? "feedback" : "home";
