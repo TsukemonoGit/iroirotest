@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import iroiro from "@/app/iroiroData/iroiro.json";
+import iroiro from "./iroiroData/iroiro.json";
 import Table from "@mui/joy/Table";
 import { theme } from "./page";
 import { Box, Button, Input, Stack } from "@mui/joy";
