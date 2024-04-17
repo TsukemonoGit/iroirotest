@@ -22,7 +22,7 @@ const IroiroBotDisplay = ({ theme }: { theme: Theme }) => {
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const [sortField, setSortField] = useState<keyof DataItem>("title");
   const isLargeScreen = useMediaQuery(theme?.breakpoints.up("sm"));
-
+  console.log(theme);
   useEffect(() => {
     const searchData = () => {
       const filteredData = Object.values(iroiro).filter((item: DataItem) =>
@@ -135,11 +135,11 @@ const IroiroBotDisplay = ({ theme }: { theme: Theme }) => {
       >
         <thead>
           <tr>
-            <th style={{ width: "20%" }} onClick={() => sortData("title")}>
+            <th style={{ width: "22%" }} onClick={() => sortData("title")}>
               Title {renderSortIcon("title")}
             </th>
             <th
-              style={{ width: "65%" }}
+              style={{ width: "60%" }}
               onClick={() => sortData("description")}
             >
               Description {renderSortIcon("description")}
@@ -152,7 +152,7 @@ const IroiroBotDisplay = ({ theme }: { theme: Theme }) => {
                 >
                   Category {renderSortIcon("category")}
                 </th>
-                <th style={{ width: "5%" }} onClick={() => sortData("kind")}>
+                <th style={{ width: "8%" }} onClick={() => sortData("kind")}>
                   Kind {renderSortIcon("kind")}
                 </th>
               </>

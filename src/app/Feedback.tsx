@@ -5,6 +5,7 @@ import {
   FormControl,
   Grid,
   TextField,
+  ThemeProvider,
   Typography,
   useTheme,
 } from "@mui/material";
@@ -66,7 +67,7 @@ export default function Feedback({ setOpenSnackbar, theme }: Props) {
   };
 
   return (
-    <>
+    <ThemeProvider theme={theme}>
       <Typography variant="h4" gutterBottom sx={{ mt: 2 }}>
         Feedback
       </Typography>
@@ -78,7 +79,6 @@ export default function Feedback({ setOpenSnackbar, theme }: Props) {
           mt: 6,
           maxWidth: "90%",
 
-          bgcolor: theme.palette.grey[200],
           p: 4,
         }}
       >
@@ -88,7 +88,6 @@ export default function Feedback({ setOpenSnackbar, theme }: Props) {
               fontSize: 14,
               textAlign: "center",
             }}
-            color="text.secondary"
             gutterBottom
           >
             Your message will be sent via encrypted DM using a randomly
@@ -133,7 +132,6 @@ export default function Feedback({ setOpenSnackbar, theme }: Props) {
             <TextField
               required
               label="message"
-              sx={{}}
               fullWidth
               value={message}
               multiline
@@ -164,6 +162,6 @@ export default function Feedback({ setOpenSnackbar, theme }: Props) {
           </Grid>
         </Grid>
       </FormControl>
-    </>
+    </ThemeProvider>
   );
 }
