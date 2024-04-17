@@ -34,9 +34,21 @@ jobs:
           repository: ${{ github.repository }}  # リポジトリを現在のリポジトリに設定
           submodules: 'recursive'  # サブモジュールを再帰的にチェックアウト
       - name: Update submodules
-        run: git submodule update --remote
+        run: git submodule update --remote --recursive 
         working-directory: ./src/app/iroiroData  # サブモジュールのパスを指定
-
+      - name: Add and commit files
+        run: |
+          git add .
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git commit -m "Update submodules at $(date "+DATE: %Y-%m-%d TIME: %H:%M:%S")"
+        if: ${{ steps.status.outputs.status }}
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: main
+        if: ${{ steps.status.outputs.status && github.event_name == 'push' }}
 
   # Build job
   build:
