@@ -111,7 +111,7 @@ const IroiroBotDisplay: React.FC = () => {
           が以下のNostr関連の情報リストからランダムに一つ選んで毎時16分にポストします。
         </Typography>
         <Box sx={{ mt: 2, display: "flex", alignItems: "center", gap: 1 }}>
-          <Typography>検索</Typography>
+          <Typography sx={{ wordBreak: "keep-all" }}>検索</Typography>
           <Input
             type="text"
             value={searchTerm}

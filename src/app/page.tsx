@@ -37,7 +37,7 @@ export default function Home() {
         <Tabs
           aria-label="tabs"
           sx={{ bgcolor: "transparent" }}
-          defaultValue={selectedTab}
+          value={selectedTab}
           onChange={handleChangeTab}
         >
           <TabList
