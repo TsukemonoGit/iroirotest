@@ -135,6 +135,7 @@ export default function Home() {
             theme={theme}
             searchTerm={searchTerm}
             setSearchTerm={setSearchTerm}
+            setOpenSnackbar={setOpenSnackbar}
           />
         ) : (
           <Feedback setOpenSnackbar={setOpenSnackbar} theme={theme} />

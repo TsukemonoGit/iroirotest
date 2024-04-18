@@ -33,10 +33,18 @@ const IroiroBotDisplay = ({
   theme,
   searchTerm,
   setSearchTerm,
+  setOpenSnackbar,
 }: {
   theme: Theme;
   searchTerm: string;
   setSearchTerm: any;
+  setOpenSnackbar: React.Dispatch<
+    React.SetStateAction<{
+      isopen: boolean;
+      type: string;
+      message: string;
+    }>
+  >;
 }) => {
   const [filteredIroiro, setFilteredIroiro] = useState<DataItem[]>([]);
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
@@ -59,7 +67,8 @@ const IroiroBotDisplay = ({
   };
 
   const shareURL = () => {
-    const currentURL = window.location.href;
+    const currentURL = window.location.origin;
+    console.log(window.location);
     const newURL = new URL(currentURL);
     if (searchTerm.trim() !== "") {
       newURL.searchParams.set("search", searchTerm); // クエリパラメータ 'search' に検索テキストをセット
@@ -67,10 +76,20 @@ const IroiroBotDisplay = ({
     navigator.clipboard
       .writeText(newURL.href)
       .then(() => {
-        alert("Copied share URL: " + newURL.href);
+        // alert("Copied share URL: " + newURL.href);
+        setOpenSnackbar({
+          isopen: true,
+          type: "success",
+          message: `Copied share URL: ${newURL.href}`,
+        });
       })
       .catch((err) => {
-        console.error("Failed to copy share URL: ", err);
+        //console.error("Failed to copy share URL: ", err);
+        setOpenSnackbar({
+          isopen: true,
+          type: "error",
+          message: "Failed to copy share URL",
+        });
       });
   };
 
