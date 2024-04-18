@@ -62,14 +62,19 @@ export default function Home() {
       <main className="flex min-h-screen flex-col items-center  container mx-auto p-1 ">
         <Box
           sx={{
-            borderColor: theme.palette.divider,
+            //    borderColor: theme.palette.divider,
             width: "100%",
+            maxWidth: "1536px",
             boxShadow: "1",
             top: 0,
             justifyContent: "space-between",
             display: "flex",
           }}
-          bgcolor={`${alpha(theme.palette.background.default, 0.5)}`}
+          bgcolor={
+            theme.palette.mode === "light"
+              ? `${alpha(theme.palette.grey[300], 0.7)}`
+              : `${alpha(theme.palette.grey[800], 0.7)}`
+          }
           position="fixed"
         >
           <Typography

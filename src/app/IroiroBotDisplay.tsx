@@ -96,6 +96,31 @@ const IroiroBotDisplay = ({ theme }: { theme: Theme }) => {
     return null;
   };
 
+  const renderDescription = (description: string) => {
+    const replacedDescription = description.replace(
+      /nostr:([^\s]+)/g,
+      "https://nostter.app/$1"
+    );
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    const parts = replacedDescription.split(urlRegex);
+    return parts.map((part, index) => {
+      if (part.match(urlRegex)) {
+        return (
+          <Link
+            key={index}
+            href={part}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {part}
+          </Link>
+        );
+      } else {
+        return part;
+      }
+    });
+  };
+
   return (
     <>
       <Typography variant="h4" gutterBottom sx={{ mt: 8, mb: 6 }}>
@@ -195,7 +220,7 @@ const IroiroBotDisplay = ({ theme }: { theme: Theme }) => {
                     {item.title}
                   </Link>
                 </TableCell>
-                <TableCell>{item.description}</TableCell>
+                <TableCell>{renderDescription(item.description)}</TableCell>
                 {isLargeScreen && (
                   <>
                     <TableCell>{item.category}</TableCell>
