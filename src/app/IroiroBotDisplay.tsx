@@ -29,8 +29,15 @@ type DataItem = {
   url: string;
 };
 
-const IroiroBotDisplay = ({ theme }: { theme: Theme }) => {
-  const [searchTerm, setSearchTerm] = useState<string>("");
+const IroiroBotDisplay = ({
+  theme,
+  searchTerm,
+  setSearchTerm,
+}: {
+  theme: Theme;
+  searchTerm: string;
+  setSearchTerm: any;
+}) => {
   const [filteredIroiro, setFilteredIroiro] = useState<DataItem[]>([]);
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const [sortField, setSortField] = useState<keyof DataItem>("title");
@@ -53,10 +60,14 @@ const IroiroBotDisplay = ({ theme }: { theme: Theme }) => {
 
   const shareURL = () => {
     const currentURL = window.location.href;
+    const newURL = new URL(currentURL);
+    if (searchTerm.trim() !== "") {
+      newURL.searchParams.set("search", searchTerm); // クエリパラメータ 'search' に検索テキストをセット
+    }
     navigator.clipboard
-      .writeText(currentURL)
+      .writeText(newURL.href)
       .then(() => {
-        alert("Copied share URL: " + currentURL);
+        alert("Copied share URL: " + newURL.href);
       })
       .catch((err) => {
         console.error("Failed to copy share URL: ", err);

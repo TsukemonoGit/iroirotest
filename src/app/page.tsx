@@ -5,7 +5,6 @@ import Feedback from "./Feedback";
 import {
   Alert,
   Box,
-  Grid,
   Snackbar,
   Tab,
   Tabs,
@@ -14,12 +13,10 @@ import {
   Typography,
   alpha,
   createTheme,
-  tabClasses,
   useMediaQuery,
 } from "@mui/material";
 import { Suspense, useEffect, useMemo, useState } from "react";
 import React from "react";
-import { TabPanel } from "@mui/joy";
 import HomeIcon from "@mui/icons-material/Home";
 import FeedbackIcon from "@mui/icons-material/Feedback";
 export default function Home() {
@@ -33,14 +30,16 @@ export default function Home() {
       },
     });
   }, [prefersDarkMode]);
-
+  const [searchTerm, setSearchTerm] = useState<string>("");
   const [selectedTab, setSelectedTab] = useState("home");
 
   useEffect(() => {
     if (typeof window !== "undefined") {
       const searchParams = new URLSearchParams(window?.location?.search);
       const pageid = searchParams.get("page");
-      console.log(pageid);
+      const searchWord = searchParams.get("search") ?? "";
+      console.log(searchWord);
+      setSearchTerm(searchWord);
       setSelectedTab(pageid || "home");
     }
   }, []);
@@ -132,7 +131,11 @@ export default function Home() {
         <Feedback setOpenSnackbar={setOpenSnackbar} theme={theme} />
       </TabPanel> */}
         {selectedTab === "home" ? (
-          <IroiroBotDisplay theme={theme} />
+          <IroiroBotDisplay
+            theme={theme}
+            searchTerm={searchTerm}
+            setSearchTerm={setSearchTerm}
+          />
         ) : (
           <Feedback setOpenSnackbar={setOpenSnackbar} theme={theme} />
         )}
