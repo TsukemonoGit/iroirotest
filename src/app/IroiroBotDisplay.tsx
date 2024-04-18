@@ -67,7 +67,7 @@ const IroiroBotDisplay = ({
   };
 
   const shareURL = () => {
-    const currentURL = window.location.origin;
+    const currentURL = window.location.origin + window.location.pathname;
     console.log(window.location);
     const newURL = new URL(currentURL);
     if (searchTerm.trim() !== "") {
