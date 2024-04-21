@@ -28,11 +28,12 @@ jobs:
 
       - name: Check git dif & set status
         id: status
-        run: echo "status=$(git status -s)" >> $GITHUB_OUTPUT
+        run: echo "status=$(git status -s)" >> $GITHUB_ENV
       
 
   push:
-    if: ${{ steps.status.outputs.status }}
+
+    if: ${{ status }}
     runs-on: ubuntu-latest
     steps:
       - uses: snow-actions/git-config-user@v1.0.0
@@ -50,7 +51,7 @@ jobs:
 
   # Build job
   build:
-    if: ${{ steps.status.outputs.status }}
+    if: ${{ status }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
