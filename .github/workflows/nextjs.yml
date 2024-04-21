@@ -51,9 +51,10 @@ jobs:
           git add .
           git commit -m 'Update submodle' || true # エラーが出ても続行
           git push || true # エラーが出ても続行
-
+          if: ${{ steps.status.outputs.status }}
        # Checkout the latest commit after submodule update
       - name: Checkout latest commit
+        if: ${{ steps.status.outputs.status }}
         run: git checkout ${{ github.sha }}
 
   # Build job
