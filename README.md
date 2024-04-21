@@ -3,6 +3,7 @@ https://github.com/TsukemonoGit/nostr-iroiro-bot のjsonDataを表示するや�
 
 actionsでsubmoduleのアップデートとコミットしてからビルドされる
 
+あと毎日submoduleのアップデートチェックして変更あったらいろいろされる
 
 #
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
