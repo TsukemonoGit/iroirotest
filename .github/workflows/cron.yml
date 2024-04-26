@@ -1,10 +1,10 @@
 name: dairy_submodule_update_check
 on:
   schedule:
-  - cron: "0 0 * * *"
+    - cron: "0 0 * * *"
 
   workflow_dispatch:
- 
+
 permissions:
   pages: write
   id-token: write
@@ -21,47 +21,46 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          repository: ${{ github.repository }}  # リポジトリを現在のリポジトリに設定
-          submodules: 'recursive'  # サブモジュールを再帰的にチェックアウト
+          repository: ${{ github.repository }} # リポジトリを現在のリポジトリに設定
+          submodules: "recursive" # サブモジュールを再帰的にチェックアウト
       - name: Update submodules
-        run: git submodule update --remote --recursive 
+        run: git submodule update --remote --recursive
 
       - name: Check git dif & set status
-        id: status
+        id: status_step
         run: echo "status=$(git status -s)" >> $GITHUB_OUTPUT
-      
 
   push:
-
+    needs: update-submodule # サブモジュール更新ジョブの完了を待ってからビルドを開始
     if: ${{ needs.update-submodule.outputs.status }}
     runs-on: ubuntu-latest
-    needs: update-submodule  # サブモジュール更新ジョブの完了を待ってからビルドを開始
-  
+
     steps:
       - uses: snow-actions/git-config-user@v1.0.0
         with:
-          name:  ${{secrets.USER_NAME}}
+          name: ${{secrets.USER_NAME}}
           email: ${{secrets.USER_EMAIL}}
       - run: |
           set -x
           git add .
           git commit -m 'Update submodle' 
-          git push 
-       # Checkout the latest commit after submodule update
+          git push
+        # Checkout the latest commit after submodule update
       - name: Checkout latest commit
         run: git checkout ${{ github.sha }}
 
   # Build job
   build:
+    needs: [update-submodule, push]
     if: ${{ needs.update-submodule.outputs.status }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          repository: ${{ github.repository }}  # リポジトリを現在のリポジトリに設定
-          ref: ${{ github.sha }}  # 最新のコミットをチェックアウトして、更新されたサブモジュールのデータを含める  
-          submodules: 'recursive'  # サブモジュールを再帰的にチェックアウト
+          repository: ${{ github.repository }} # リポジトリを現在のリポジトリに設定
+          ref: ${{ github.sha }} # 最新のコミットをチェックアウトして、更新されたサブモジュールのデータを含める
+          submodules: "recursive" # サブモジュールを再帰的にチェックアウト
 
       - name: Detect package manager
         id: detect-package-manager
