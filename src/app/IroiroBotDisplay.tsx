@@ -53,8 +53,10 @@ const IroiroBotDisplay = ({
   //console.log(theme);
   useEffect(() => {
     const searchData = () => {
-      const filteredData = Object.values(iroiro).filter((item: DataItem) =>
-        item.title.toLowerCase().includes(searchTerm.toLowerCase())
+      const filteredData = Object.values(iroiro).filter(
+        (item: DataItem) =>
+          item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          item.description.toLowerCase().includes(searchTerm.toLowerCase())
       );
       setFilteredIroiro(filteredData);
     };
