@@ -24,14 +24,13 @@ jobs:
           repository: ${{ github.repository }} # リポジトリを現在のリポジトリに設定
           submodules: "recursive" # サブモジュールを再帰的にチェックアウト
       - name: Update submodules
-        run: git submodule update --remote --recursive
-
-      - name: Check git dif & set status
         id: status_step
-        run: echo "status=$(git status -s)" >> $GITHUB_OUTPUT
+        run: |
+          git submodule update --remote --recursive
+          echo "status=$(git status -s)" >> $GITHUB_OUTPUT
       - name: Check for differences
         run: |
-          if [[ "${{ needs.update-submodule.outputs.status }}" ]]; then
+          if [[ "${{ steps.status_step.outputs.status }}" ]]; then
             echo "There were differences in the submodule update."
           else
             echo "No differences found in the submodule update."
