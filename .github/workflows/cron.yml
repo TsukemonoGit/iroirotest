@@ -39,7 +39,7 @@ jobs:
 
   push:
     needs: update-submodule # サブモジュール更新ジョブの完了を待ってからビルドを開始
-    if: ${{ needs.update-submodule.outputs.status }}
+    if: ${{ needs.update-submodule.outputs.status !=="" }}
     runs-on: ubuntu-latest
 
     steps:
@@ -59,7 +59,7 @@ jobs:
   # Build job
   build:
     needs: [update-submodule, push]
-    if: ${{ needs.update-submodule.outputs.status }}
+    if: ${{ needs.update-submodule.outputs.status !=="" }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -120,7 +120,6 @@ jobs:
 
   # Deployment job
   deploy:
-    if: ${{ needs.update-submodule.outputs.status }}
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
