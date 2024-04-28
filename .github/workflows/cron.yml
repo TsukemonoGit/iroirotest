@@ -29,6 +29,13 @@ jobs:
       - name: Check git dif & set status
         id: status_step
         run: echo "status=$(git status -s)" >> $GITHUB_OUTPUT
+      - name: Check for differences
+        run: |
+          if [[ "${{ needs.update-submodule.outputs.status }}" ]]; then
+            echo "There were differences in the submodule update."
+          else
+            echo "No differences found in the submodule update."
+          fi
 
   push:
     needs: update-submodule # サブモジュール更新ジョブの完了を待ってからビルドを開始
