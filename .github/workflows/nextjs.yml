@@ -40,6 +40,13 @@ jobs:
       - name: Check git dif & set output
         id: status
         run: echo "status=$(git status -s)" >> $GITHUB_OUTPUT
+      - name: Check for differences
+        run: |
+          if [[ "${{ steps.status.outputs.status }}" ]]; then
+            echo "There were differences in the submodule update."
+          else
+            echo "No differences found in the submodule update."
+          fi
         
       - uses: snow-actions/git-config-user@v1.0.0
         if: ${{ steps.status.outputs.status }}
