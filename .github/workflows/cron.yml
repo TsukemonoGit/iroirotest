@@ -21,8 +21,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          repository: ${{ github.repository }} # リポジトリを現在のリポジトリに設定
-          submodules: "recursive" # サブモジュールを再帰的にチェックアウト
+          repository: ${{ github.repository }} 
+          submodules: true
+          fetch-depth: 0
       - name: Update submodules
         id: status_step
         run: |
