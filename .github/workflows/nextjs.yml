@@ -48,7 +48,7 @@ jobs:
           fi
         
       - uses: snow-actions/git-config-user@v1.0.0
-        if: ${{ steps.status.outputs.status }}
+        if: ${{ steps.status.outputs.status !==""  }}
         with:
           name:  ${{secrets.USER_NAME}}
           email: ${{secrets.USER_EMAIL}}
@@ -60,7 +60,7 @@ jobs:
         if: ${{ steps.status.outputs.status !=="" }}
        # Checkout the latest commit after submodule update
       - name: Checkout latest commit
-        if: ${{ steps.status.outputs.status !==""}}
+        if: ${{ steps.status.outputs.status !=="" }}
         run: git checkout ${{ github.sha }}
 
   # Build job
