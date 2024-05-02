@@ -37,28 +37,24 @@ jobs:
             echo "No differences found in the submodule update."
           fi
 
-  push:
-    needs: update-submodule # サブモジュール更新ジョブの完了を待ってからビルドを開始
-    if: ${{ needs.update-submodule.outputs.status != '' }}
-    runs-on: ubuntu-latest
-
-    steps:
       - uses: snow-actions/git-config-user@v1.0.0
         with:
           name: ${{secrets.USER_NAME}}
           email: ${{secrets.USER_EMAIL}}
       - run: |
-          set -x
-          git add .
-          git commit -m 'Update submodle' 
-          git push
-        # Checkout the latest commit after submodule update
-      - name: Checkout latest commit
-        run: git checkout ${{ github.sha }}
+          if [[ "${{ steps.status_step.outputs.status }}" ]]; then
+            set -x
+            git add .
+            git commit -m 'Update submodle' 
+            git push
+            git checkout ${{ github.sha }}
+          else
+            exit 1
+          fi
 
   # Build job
   build:
-    needs: [update-submodule, push]
+    needs: [ push]
     if: ${{ needs.update-submodule.outputs.status != '' }}
     runs-on: ubuntu-latest
     steps:
