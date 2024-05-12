@@ -55,7 +55,6 @@ jobs:
   # Build job
   build:
     needs: [ update-submodule]
-    if: ${{ needs.update-submodule.outputs.status != '' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
