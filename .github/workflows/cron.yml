@@ -51,17 +51,6 @@ jobs:
             exit 1
           fi
 
-  # Build job
-  build:
-    needs: [ update-submodule]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          repository: ${{ github.repository }} # リポジトリを現在のリポジトリに設定
-          fetch-depth: 0
-          submodules: "recursive" # サブモジュールを再帰的にチェックアウト
 
       - name: Detect package manager
         id: detect-package-manager
