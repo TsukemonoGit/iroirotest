@@ -46,6 +46,8 @@ export default function Feedback({ setOpenSnackbar, theme }: Props) {
             type: "success",
             message: "Thank you for reaching out!",
           });
+          setName("");
+          setMessage("");
         } else {
           throw error;
         }
