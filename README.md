@@ -1,5 +1,9 @@
 # iroiroBot の Site
+
+記載情報の修正などは https://github.com/TsukemonoGit/nostr-iroiro-bot の方にお願いします。
+
 https://github.com/TsukemonoGit/nostr-iroiro-bot のjsonDataを表示するやつ
+
 
 actionsでsubmoduleのアップデートとコミットしてからビルドされる
 
