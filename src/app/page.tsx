@@ -15,7 +15,7 @@ import {
   createTheme,
   useMediaQuery,
 } from "@mui/material";
-import { Suspense, useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import React from "react";
 import HomeIcon from "@mui/icons-material/Home";
 import FeedbackIcon from "@mui/icons-material/Feedback";

@@ -2,9 +2,10 @@ import { useEffect, useState } from "react";
 import iroiro from "./iroiroData/iroiro.json";
 import {
   Button,
-  Input,
+
   Link,
   Paper,
+  Stack,
   Table,
   TableBody,
   TableCell,
@@ -13,13 +14,14 @@ import {
   TableRow,
   TextField,
   Theme,
-  ThemeProvider,
+
 } from "@mui/material";
-import { Box } from "@mui/joy";
+import Box from '@mui/material/Box';
 import Typography from "@mui/material/Typography";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
+import "@konemono/nostr-share-component"
 
 type DataItem = {
   title: string;
@@ -155,8 +157,8 @@ const IroiroBotDisplay = ({
 
   return (
     <>
-      <Typography variant="h4" gutterBottom sx={{ mt: 8, mb: 6 }}>
-        iroiro Data
+      <Typography variant="h4" gutterBottom sx={{ mt: 8, mb: 6, display: "flex", gap: 1 }}>
+        iroiro Data<nostr-share data-type="icon"></nostr-share>
       </Typography>
       <Box>
         <Typography

@@ -1,13 +1,10 @@
 import { useState } from "react";
 import {
-  Box,
   Button,
   FormControl,
   Grid,
   TextField,
-  ThemeProvider,
   Typography,
-  useTheme,
 } from "@mui/material";
 import { Theme } from "@mui/material";
 import { sendMessage } from "./function";
