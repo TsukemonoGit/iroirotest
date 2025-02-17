@@ -29,7 +29,6 @@ import Typography from "@mui/material/Typography";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
-import "@konemono/nostr-share-component"
 
 type DataItem = {
   title: string;
@@ -73,6 +72,12 @@ const IroiroBotDisplay = ({
 
     searchData();
   }, [searchTerm]);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      require("@konemono/nostr-share-component");
+    }
+  }, []);
 
   const searchHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
@@ -166,7 +171,7 @@ const IroiroBotDisplay = ({
   return (
     <>
       <Typography variant="h4" gutterBottom sx={{ mt: 8, mb: 6, display: "flex", gap: 1 }}>
-        iroiro Data<nostr-share data-type="icon"></nostr-share>
+        iroiro Data{typeof window !== "undefined" && <nostr-share data-type="icon" data-text="NostrのiroiroBotのサイト"></nostr-share>}
       </Typography>
       <Box>
         <Typography
