@@ -59,6 +59,7 @@ const IroiroBotDisplay = ({
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const [sortField, setSortField] = useState<keyof DataItem>("title");
   const isLargeScreen = useMediaQuery(theme?.breakpoints.up("sm"));
+  const [isClient, setIsClient] = useState(false);
   //console.log(theme);
   useEffect(() => {
     const searchData = () => {
@@ -75,6 +76,7 @@ const IroiroBotDisplay = ({
 
   useEffect(() => {
     if (typeof window !== "undefined") {
+      setIsClient(true);
       require("@konemono/nostr-share-component");
     }
   }, []);
@@ -171,7 +173,12 @@ const IroiroBotDisplay = ({
   return (
     <>
       <Typography variant="h4" gutterBottom sx={{ mt: 8, mb: 6, display: "flex", gap: 1 }}>
-        iroiro Data{typeof window !== "undefined" && <nostr-share data-type="icon" data-text="NostrのiroiroBotのサイト"></nostr-share>}
+        iroiro Data{isClient && (
+          <nostr-share
+            data-type="icon"
+            data-text={`NostrのiroiroBotのサイト\n${window.location.href}`}
+          ></nostr-share>
+        )}
       </Typography>
       <Box>
         <Typography
