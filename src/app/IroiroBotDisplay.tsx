@@ -74,17 +74,26 @@ const IroiroBotDisplay = ({
 
   useEffect(() => {
     const searchData = () => {
-      const filteredData = Object.values(iroiro).filter((item: DataItem) => {
-        const matchesSearch =
-          item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          item.description.toLowerCase().includes(searchTerm.toLowerCase());
+      const filteredData = Object.values(iroiro)
+        .map((item) => {
+          // Ensure status is "active" | "inactive" | undefined
+          const status =
+            item.status === "active" || item.status === "inactive"
+              ? item.status
+              : undefined;
+          return { ...item, status } as DataItem;
+        })
+        .filter((item: DataItem) => {
+          const matchesSearch =
+            item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            item.description.toLowerCase().includes(searchTerm.toLowerCase());
 
-        if (!showInactive && item.status === "inactive") {
-          return false;
-        }
+          if (!showInactive && item.status === "inactive") {
+            return false;
+          }
 
-        return matchesSearch;
-      });
+          return matchesSearch;
+        });
       setFilteredIroiro(filteredData);
     };
 
@@ -345,7 +354,14 @@ const IroiroBotDisplay = ({
         >
           <TableHead>
             <TableRow>
-              <TableCell style={{ width: "4%", fontWeight: "bold" }}>
+              <TableCell
+                style={{
+                  width: "3%",
+                  padding: 0,
+                  fontWeight: "bold",
+                  textAlign: "center",
+                }}
+              >
                 状態
               </TableCell>
               <TableCell
@@ -381,7 +397,14 @@ const IroiroBotDisplay = ({
           <TableBody>
             {filteredIroiro.map((item: DataItem, index: number) => (
               <TableRow key={index} sx={getRowStyles(item)}>
-                <TableCell>{renderStatusIcon(item)}</TableCell>
+                <TableCell
+                  style={{
+                    padding: 0,
+                    textAlign: "center",
+                  }}
+                >
+                  {renderStatusIcon(item)}
+                </TableCell>
                 <TableCell>
                   <Link
                     href={item.url}
