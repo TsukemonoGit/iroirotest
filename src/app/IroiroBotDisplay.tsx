@@ -3,14 +3,17 @@ import { useEffect, useState } from "react";
 declare global {
   namespace JSX {
     interface IntrinsicElements {
-      'nostr-share': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>;
+      "nostr-share": React.DetailedHTMLProps<
+        React.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      >;
     }
   }
 }
 import iroiro from "./iroiroData/iroiro.json";
 import {
   Button,
-
+  Chip,
   Link,
   Paper,
   Stack,
@@ -22,13 +25,17 @@ import {
   TableRow,
   TextField,
   Theme,
-
+  Tooltip,
+  Fab,
 } from "@mui/material";
-import Box from '@mui/material/Box';
+import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
+import ErrorIcon from "@mui/icons-material/Error";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 
 type DataItem = {
   title: string;
@@ -36,6 +43,8 @@ type DataItem = {
   category: string;
   kind?: number;
   url: string;
+  status?: "active" | "inactive";
+  failureCount?: number;
 };
 
 const IroiroBotDisplay = ({
@@ -58,27 +67,44 @@ const IroiroBotDisplay = ({
   const [filteredIroiro, setFilteredIroiro] = useState<DataItem[]>([]);
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const [sortField, setSortField] = useState<keyof DataItem>("title");
+  const [showInactive, setShowInactive] = useState(true);
+  const [showScrollTop, setShowScrollTop] = useState(false);
   const isLargeScreen = useMediaQuery(theme?.breakpoints.up("sm"));
   const [isClient, setIsClient] = useState(false);
-  //console.log(theme);
+
   useEffect(() => {
     const searchData = () => {
-      const filteredData = Object.values(iroiro).filter(
-        (item: DataItem) =>
+      const filteredData = Object.values(iroiro).filter((item: DataItem) => {
+        const matchesSearch =
           item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          item.description.toLowerCase().includes(searchTerm.toLowerCase())
-      );
+          item.description.toLowerCase().includes(searchTerm.toLowerCase());
+
+        if (!showInactive && item.status === "inactive") {
+          return false;
+        }
+
+        return matchesSearch;
+      });
       setFilteredIroiro(filteredData);
     };
 
     searchData();
-  }, [searchTerm]);
+  }, [searchTerm, showInactive]);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
       setIsClient(true);
       require("@konemono/nostr-share-component");
     }
+  }, []);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowScrollTop(window.scrollY > 400);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const searchHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -90,12 +116,11 @@ const IroiroBotDisplay = ({
     console.log(window.location);
     const newURL = new URL(currentURL);
     if (searchTerm.trim() !== "") {
-      newURL.searchParams.set("search", searchTerm); // クエリパラメータ 'search' に検索テキストをセット
+      newURL.searchParams.set("search", searchTerm);
     }
     navigator.clipboard
       .writeText(newURL.href)
       .then(() => {
-        // alert("Copied share URL: " + newURL.href);
         setOpenSnackbar({
           isopen: true,
           type: "success",
@@ -103,13 +128,19 @@ const IroiroBotDisplay = ({
         });
       })
       .catch((err) => {
-        //console.error("Failed to copy share URL: ", err);
         setOpenSnackbar({
           isopen: true,
           type: "error",
           message: "Failed to copy share URL",
         });
       });
+  };
+
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
   };
 
   const sortData = (field: keyof DataItem) => {
@@ -126,7 +157,6 @@ const IroiroBotDisplay = ({
       if (a[field] === undefined || (a[field] as string) === "")
         return sortOrder === "asc" ? 1 : -1;
 
-      // 通常の比較
       if ((a[field] as string) < (b[field] as string))
         return sortOrder === "asc" ? -1 : 1;
       if ((a[field] as string) > (b[field] as string))
@@ -170,10 +200,62 @@ const IroiroBotDisplay = ({
     });
   };
 
+  const renderStatusIcon = (item: DataItem) => {
+    const status = item.status || "active";
+    const failureCount = item.failureCount || 0;
+
+    if (status === "inactive") {
+      return (
+        <Tooltip title={`非アクティブ (失敗回数: ${failureCount})`}>
+          <ErrorIcon color="error" fontSize="small" />
+        </Tooltip>
+      );
+    } else if (failureCount > 0) {
+      return (
+        <Tooltip title={`警告 (失敗回数: ${failureCount}/5)`}>
+          <ErrorIcon color="warning" fontSize="small" />
+        </Tooltip>
+      );
+    } else {
+      return (
+        <Tooltip title="アクティブ">
+          <CheckCircleIcon color="success" fontSize="small" />
+        </Tooltip>
+      );
+    }
+  };
+
+  const getRowStyles = (item: DataItem) => {
+    const status = item.status || "active";
+    if (status === "inactive") {
+      return {
+        opacity: 0.5,
+        backgroundColor: theme.palette.action.disabled,
+        "& .MuiTableCell-root": {
+          color: theme.palette.text.disabled,
+        },
+      };
+    }
+    return {};
+  };
+
+  const activeCount = Object.values(iroiro).filter(
+    (item) => (item as DataItem).status !== "inactive"
+  ).length;
+  const inactiveCount = Object.values(iroiro).filter(
+    (item) => (item as DataItem).status === "inactive"
+  ).length;
+  const totalCount = Object.values(iroiro).length;
+
   return (
     <>
-      <Typography variant="h4" gutterBottom sx={{ mt: 8, mb: 6, display: "flex", gap: 1 }}>
-        iroiro Data{isClient && (
+      <Typography
+        variant="h4"
+        gutterBottom
+        sx={{ mt: 8, mb: 6, display: "flex", gap: 1 }}
+      >
+        iroiro Data
+        {isClient && (
           <nostr-share
             data-type="icon"
             data-text={`NostrのiroiroBotのサイト\n${window.location.href}`}
@@ -181,11 +263,7 @@ const IroiroBotDisplay = ({
         )}
       </Typography>
       <Box>
-        <Typography
-        // sx={{
-        //   textAlign: "center",
-        // }}
-        >
+        <Typography>
           <Link
             target="_blank"
             rel="noopener noreferrer"
@@ -198,6 +276,42 @@ const IroiroBotDisplay = ({
           </Link>
           が以下のNostr関連の情報リストからランダムに一つ選んで毎時16分にポストします。
         </Typography>
+
+        <Box
+          sx={{
+            mt: 2,
+            mb: 2,
+            display: "flex",
+            gap: 1,
+            flexWrap: "wrap",
+            alignItems: "center",
+          }}
+        >
+          <Chip
+            icon={<CheckCircleIcon />}
+            label={`アクティブ: ${activeCount}`}
+            color="success"
+            variant="outlined"
+            size="small"
+          />
+          <Chip
+            icon={<ErrorIcon />}
+            label={`非アクティブ: ${inactiveCount}`}
+            color="error"
+            variant="outlined"
+            size="small"
+          />
+          <Chip label={`合計: ${totalCount}`} variant="outlined" size="small" />
+          <Button
+            variant="outlined"
+            size="small"
+            onClick={() => setShowInactive(!showInactive)}
+            sx={{ ml: "auto" }}
+          >
+            {showInactive ? "非アクティブを隠す" : "非アクティブを表示"}
+          </Button>
+        </Box>
+
         <Box sx={{ mt: 4, display: "flex", alignItems: "center", gap: 1 }}>
           <Typography sx={{ wordBreak: "keep-all" }}>検索</Typography>
           <TextField
@@ -231,14 +345,17 @@ const IroiroBotDisplay = ({
         >
           <TableHead>
             <TableRow>
+              <TableCell style={{ width: "4%", fontWeight: "bold" }}>
+                状態
+              </TableCell>
               <TableCell
-                style={{ width: "22%", fontWeight: "bold" }}
+                style={{ width: "20%", fontWeight: "bold" }}
                 onClick={() => sortData("title")}
               >
                 Title {renderSortIcon("title")}
               </TableCell>
               <TableCell
-                style={{ width: "60%", fontWeight: "bold" }}
+                style={{ width: "58%", fontWeight: "bold" }}
                 onClick={() => sortData("description")}
               >
                 Description {renderSortIcon("description")}
@@ -263,13 +380,22 @@ const IroiroBotDisplay = ({
           </TableHead>
           <TableBody>
             {filteredIroiro.map((item: DataItem, index: number) => (
-              <TableRow key={index}>
+              <TableRow key={index} sx={getRowStyles(item)}>
+                <TableCell>{renderStatusIcon(item)}</TableCell>
                 <TableCell>
                   <Link
                     href={item.url}
                     className="link"
                     target="_blank"
                     rel="external noreferrer"
+                    sx={{
+                      color:
+                        item.status === "inactive"
+                          ? "text.disabled"
+                          : "primary.main",
+                      textDecoration:
+                        item.status === "inactive" ? "line-through" : "none",
+                    }}
                   >
                     {item.title}
                   </Link>
@@ -289,6 +415,24 @@ const IroiroBotDisplay = ({
       <p id="noResultsMessage" style={{ display: "none" }}>
         No matching data found.
       </p>
+
+      {/* Scroll to top button */}
+      <Fab
+        color="primary"
+        size="medium"
+        onClick={scrollToTop}
+        sx={{
+          position: "fixed",
+          bottom: 16,
+          right: 16,
+          opacity: showScrollTop ? 1 : 0,
+          visibility: showScrollTop ? "visible" : "hidden",
+          transition: "opacity 0.3s ease, visibility 0.3s ease",
+          zIndex: 1000,
+        }}
+      >
+        <KeyboardArrowUpIcon />
+      </Fab>
     </>
   );
 };
