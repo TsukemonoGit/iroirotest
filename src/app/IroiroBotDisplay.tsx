@@ -209,9 +209,9 @@ const IroiroBotDisplay = ({
     });
   };
 
-  const renderStatusIcon = (item: DataItem) => {
-    const status = item.status || "active";
-    const failureCount = item.failureCount || 0;
+  const renderStatusIcon = (item: Partial<DataItem>) => {
+    const status = item.status ?? "active"; // null/undefined対応
+    const failureCount = item.failureCount ?? 0;
 
     if (status === "inactive") {
       return (
