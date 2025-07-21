@@ -47,6 +47,18 @@ type DataItem = {
   failureCount?: number;
 };
 
+// 型ガード関数
+const isDataItem = (item: any): item is DataItem => {
+  return (
+    typeof item === "object" &&
+    item !== null &&
+    typeof item.title === "string" &&
+    typeof item.description === "string" &&
+    typeof item.category === "string" &&
+    typeof item.url === "string"
+  );
+};
+
 const IroiroBotDisplay = ({
   theme,
   searchTerm,
@@ -75,13 +87,14 @@ const IroiroBotDisplay = ({
   useEffect(() => {
     const searchData = () => {
       const filteredData = Object.values(iroiro)
+        .filter(isDataItem)
         .map((item) => {
-          // Ensure status is "active" | "inactive" | undefined
           const status =
             item.status === "active" || item.status === "inactive"
               ? item.status
-              : undefined;
-          return { ...item, status } as DataItem;
+              : "active"; // デフォルトを "active" に
+          const failureCount = item.failureCount ?? 0;
+          return { ...item, status, failureCount };
         })
         .filter((item: DataItem) => {
           const matchesSearch =
