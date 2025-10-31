@@ -10,13 +10,13 @@ declare global {
     }
   }
 }
-import iroiro from "./iroiroData/iroiro.json";
+import iroiroData from "./iroiroData/iroiro.json";
+import statusData from "./iroiroData/status.json";
 import {
   Button,
   Chip,
   Link,
   Paper,
-  Stack,
   Table,
   TableBody,
   TableCell,
@@ -47,8 +47,15 @@ type DataItem = {
   failureCount?: number;
 };
 
+type StatusItem = {
+  status: "active" | "inactive";
+  failureCount: number;
+};
+
 // 型ガード関数
-const isDataItem = (item: any): item is DataItem => {
+const isDataItem = (
+  item: any
+): item is Omit<DataItem, "status" | "failureCount"> => {
   return (
     typeof item === "object" &&
     item !== null &&
@@ -58,6 +65,30 @@ const isDataItem = (item: any): item is DataItem => {
     typeof item.url === "string"
   );
 };
+
+// iroiroとstatusを統合
+const mergeData = (): Record<string, DataItem> => {
+  const merged: Record<string, DataItem> = {};
+
+  Object.entries(iroiroData).forEach(([key, value]) => {
+    if (isDataItem(value)) {
+      const status = (statusData as Record<string, StatusItem>)[key] || {
+        status: "active" as const,
+        failureCount: 0,
+      };
+
+      merged[key] = {
+        ...value,
+        status: status.status,
+        failureCount: status.failureCount,
+      };
+    }
+  });
+
+  return merged;
+};
+
+const iroiro = mergeData();
 
 const IroiroBotDisplay = ({
   theme,
@@ -86,27 +117,17 @@ const IroiroBotDisplay = ({
 
   useEffect(() => {
     const searchData = () => {
-      const filteredData = Object.values(iroiro)
-        .filter(isDataItem)
-        .map((item) => {
-          const status =
-            item.status === "active" || item.status === "inactive"
-              ? item.status
-              : "active"; // デフォルトを "active" に
-          const failureCount = item.failureCount ?? 0;
-          return { ...item, status, failureCount };
-        })
-        .filter((item: DataItem) => {
-          const matchesSearch =
-            item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            item.description.toLowerCase().includes(searchTerm.toLowerCase());
+      const filteredData = Object.values(iroiro).filter((item: DataItem) => {
+        const matchesSearch =
+          item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          item.description.toLowerCase().includes(searchTerm.toLowerCase());
 
-          if (!showInactive && item.status === "inactive") {
-            return false;
-          }
+        if (!showInactive && item.status === "inactive") {
+          return false;
+        }
 
-          return matchesSearch;
-        });
+        return matchesSearch;
+      });
       setFilteredIroiro(filteredData);
     };
 
@@ -223,7 +244,7 @@ const IroiroBotDisplay = ({
   };
 
   const renderStatusIcon = (item: Partial<DataItem>) => {
-    const status = item.status ?? "active"; // null/undefined対応
+    const status = item.status ?? "active";
     const failureCount = item.failureCount ?? 0;
 
     if (status === "inactive") {
@@ -262,10 +283,10 @@ const IroiroBotDisplay = ({
   };
 
   const activeCount = Object.values(iroiro).filter(
-    (item) => (item as DataItem).status !== "inactive"
+    (item) => item.status !== "inactive"
   ).length;
   const inactiveCount = Object.values(iroiro).filter(
-    (item) => (item as DataItem).status === "inactive"
+    (item) => item.status === "inactive"
   ).length;
   const totalCount = Object.values(iroiro).length;
 
@@ -452,7 +473,6 @@ const IroiroBotDisplay = ({
         No matching data found.
       </p>
 
-      {/* Scroll to top button */}
       <Fab
         color="primary"
         size="medium"
